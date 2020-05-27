@@ -1,16 +1,17 @@
-# gitstatusbg README
+# GitStatusBg (Git Status Background)
 
 Visual Studio Code extension that sets the background color of the editor to indicate the Git status of the file.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Any open file that has been modified or is untracked by Git will have a subtle background color applied to the editor. This is to help you easily identify such files, and help avoid making changes in the wrong place.
 
-For example if there is an image subfolder under your extension project workspace:
+The images below show an open modified and untracked file open in the editor.
 
-\!\[feature X\]\(images/feature-x.png\)
+![Example using dark theme](assets/screenshot-dark.png)
+![Exampel using light theme](assets/screenshot-light.png)
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+If you would prefer to use different colors (or they don't work with your chosen theme) the colors can be changed in settings to whatever you wish.
 
 ## Requirements
 
@@ -34,4 +35,3 @@ n/a
 ### 1.0.0
 
 Initial release.
-
