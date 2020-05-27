@@ -2,7 +2,12 @@
 	"name": "gitstatusbg",
 	"displayName": "GitStatusBg",
 	"description": "VS Code extension that sets the background color of the editor to indicate the Git status of the file.",
-	"version": "0.0.1",
+	"publisher": "MattLaceyLtd",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/mrlacey/GitStatusBg"
+	},
+	"version": "1.0.0",
 	"engines": {
 		"vscode": "^1.45.0"
 	},
