@@ -6,16 +6,21 @@ import { GitExtension, API, Status } from "./api/git";
 // These are also defined in the configuration
 let COLOR_MODIFIED: string | undefined = "rgba(255, 165, 0, 0.05)";
 let COLOR_UNTRACKED: string | undefined = "rgba(71, 255, 25, 0.05)";
+let COLOR_BEHIND: string | undefined = "rgba(0, 0, 255, 0.05)";
+
+const enum XStatus {
+  CHANGED_ON_SERVER = 100
+}
 
 let git: API | undefined = undefined;
 
-// Keep trrack of current doecorations so that they can be remove
+// Keep track of current doecorations so that they can be removed
 let currentDecorations: {
   [path: string]: vscode.TextEditorDecorationType | undefined;
 } = {};
 
 let fileStatusCache: {
-  [path: string]: Status | undefined;
+  [path: string]: Status | XStatus | undefined;
 } = {};
 
 export async function activate(context: vscode.ExtensionContext) {
@@ -142,6 +147,10 @@ async function SetColorToStatus(
         bgcolor = COLOR_UNTRACKED;
         break;
       }
+      case XStatus.CHANGED_ON_SERVER: {
+        bgcolor = COLOR_BEHIND;
+        break;
+      }
     }
 
     if (bgcolor) {
@@ -182,6 +191,25 @@ async function GetStatus(_fspath: string) {
       }
     }
   });
+
+  let behind = repo.state.HEAD?.behind;
+  if (!behind ? false : behind > 0)
+  {
+    // There are changes on the server
+    let upstream = repo.state.HEAD?.upstream;
+    if (upstream && upstream.name && upstream.remote)
+    {
+      let upstreamDiff = await repo.diffWith(`${upstream?.remote}/${upstream?.name}`);
+
+      upstreamDiff.forEach((value, _index, _changes) => {
+        if (value.uri.fsPath === _fspath)
+        {
+          result = XStatus.CHANGED_ON_SERVER;
+          fileStatusCache[_fspath] = result;
+        }
+      });
+    }
+  }
 
   return result;
 }

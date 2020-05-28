@@ -15,8 +15,9 @@ const vscode = require("vscode");
 // These are also defined in the configuration
 let COLOR_MODIFIED = "rgba(255, 165, 0, 0.05)";
 let COLOR_UNTRACKED = "rgba(71, 255, 25, 0.05)";
+let COLOR_BEHIND = "rgba(0, 0, 255, 0.05)";
 let git = undefined;
-// Keep trrack of current doecorations so that they can be remove
+// Keep track of current doecorations so that they can be removed
 let currentDecorations = {};
 let fileStatusCache = {};
 function activate(context) {
@@ -110,6 +111,10 @@ function SetColorToStatus(editor, range) {
                     bgcolor = COLOR_UNTRACKED;
                     break;
                 }
+                case 100 /* CHANGED_ON_SERVER */: {
+                    bgcolor = COLOR_BEHIND;
+                    break;
+                }
             }
             if (bgcolor) {
                 ColorBackground(bgcolor, editor, rangeToUse);
@@ -118,6 +123,7 @@ function SetColorToStatus(editor, range) {
     });
 }
 function GetStatus(_fspath) {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         if (!git) {
             return undefined;
@@ -144,6 +150,20 @@ function GetStatus(_fspath) {
                 }
             }
         });
+        let behind = (_a = repo.state.HEAD) === null || _a === void 0 ? void 0 : _a.behind;
+        if (!behind ? false : behind > 0) {
+            // There are changes on the server
+            let upstream = (_b = repo.state.HEAD) === null || _b === void 0 ? void 0 : _b.upstream;
+            if (upstream && upstream.name && upstream.remote) {
+                let upstreamDiff = yield repo.diffWith(`${upstream === null || upstream === void 0 ? void 0 : upstream.remote}/${upstream === null || upstream === void 0 ? void 0 : upstream.name}`);
+                upstreamDiff.forEach((value, _index, _changes) => {
+                    if (value.uri.fsPath === _fspath) {
+                        result = 100 /* CHANGED_ON_SERVER */;
+                        fileStatusCache[_fspath] = result;
+                    }
+                });
+            }
+        }
         return result;
     });
 }
