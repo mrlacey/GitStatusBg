@@ -6,7 +6,7 @@ import { GitExtension, API, Status } from "./api/git";
 // These are also defined in the configuration
 let COLOR_MODIFIED: string | undefined = "rgba(255, 165, 0, 0.05)";
 let COLOR_UNTRACKED: string | undefined = "rgba(71, 255, 25, 0.05)";
-let COLOR_BEHIND: string | undefined = "rgba(0, 0, 255, 0.05)";
+let COLOR_BEHIND: string | undefined = "rgba(255, 0, 0, 0.05)";
 
 const enum XStatus {
   CHANGED_ON_SERVER = 100

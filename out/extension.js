@@ -15,7 +15,7 @@ const vscode = require("vscode");
 // These are also defined in the configuration
 let COLOR_MODIFIED = "rgba(255, 165, 0, 0.05)";
 let COLOR_UNTRACKED = "rgba(71, 255, 25, 0.05)";
-let COLOR_BEHIND = "rgba(0, 0, 255, 0.05)";
+let COLOR_BEHIND = "rgba(255, 0, 0, 0.05)";
 let git = undefined;
 // Keep track of current doecorations so that they can be removed
 let currentDecorations = {};
