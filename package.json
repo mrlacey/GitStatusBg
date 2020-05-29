@@ -32,6 +32,11 @@
 				"type": "string",
 				"default": "rgba(255, 165, 0, 0.05)",
 				"description": "The tint color to use for the background of modified files. Ensure the opacity is low to avoid obscuring text."
+			  },
+			  "gitstatusbg.behindRemoteFileBackground": {
+				"type": "string",
+				"default": "rgba(255, 0, 0, 0.05)",
+				"description": "The tint color to use for the background of files that have a modified remote version. Ensure the opacity is low to avoid obscuring text."
 			  }
 			}
 		  }

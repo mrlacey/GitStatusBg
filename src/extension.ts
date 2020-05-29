@@ -9,7 +9,7 @@ let COLOR_UNTRACKED: string | undefined = "rgba(71, 255, 25, 0.05)";
 let COLOR_BEHIND: string | undefined = "rgba(255, 0, 0, 0.05)";
 
 const enum XStatus {
-  CHANGED_ON_SERVER = 100
+  CHANGED_ON_SERVER = 100,
 }
 
 let git: API | undefined = undefined;
@@ -116,6 +116,12 @@ function ReloadConfigurationInCaseChanged() {
   if (modified) {
     COLOR_MODIFIED = modified;
   }
+
+  let behind: any = config.get("gitstatusbg.behindRemoteFileBackground");
+
+  if (behind) {
+    COLOR_BEHIND = behind;
+  }
 }
 
 async function SetColorToStatus(
@@ -192,22 +198,23 @@ async function GetStatus(_fspath: string) {
     }
   });
 
-  let behind = repo.state.HEAD?.behind;
-  if (!behind ? false : behind > 0)
-  {
-    // There are changes on the server
-    let upstream = repo.state.HEAD?.upstream;
-    if (upstream && upstream.name && upstream.remote)
-    {
-      let upstreamDiff = await repo.diffWith(`${upstream?.remote}/${upstream?.name}`);
+  if (!result) {
+    let behind = repo.state.HEAD?.behind;
+    if (!behind ? false : behind > 0) {
+      // There are changes on the server
+      let upstream = repo.state.HEAD?.upstream;
+      if (upstream && upstream.name && upstream.remote) {
+        let upstreamDiff = await repo.diffWith(
+          `${upstream?.remote}/${upstream?.name}`
+        );
 
-      upstreamDiff.forEach((value, _index, _changes) => {
-        if (value.uri.fsPath === _fspath)
-        {
-          result = XStatus.CHANGED_ON_SERVER;
-          fileStatusCache[_fspath] = result;
-        }
-      });
+        upstreamDiff.forEach((value, _index, _changes) => {
+          if (value.uri.fsPath === _fspath) {
+            result = XStatus.CHANGED_ON_SERVER;
+            fileStatusCache[_fspath] = result;
+          }
+        });
+      }
     }
   }
 
