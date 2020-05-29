@@ -41,7 +41,7 @@ export async function activate(context: vscode.ExtensionContext) {
     ),
 
     // File saved so pick up any changes because of saving
-    vscode.workspace.onDidSaveTextDocument((e) => {}),
+    vscode.workspace.onDidSaveTextDocument(onFileSaved),
 
     // Potentially large number of files changed - just reset the status cache (lazy but effective)
     vscode.workspace.onDidChangeWorkspaceFolders((e) => {
@@ -59,6 +59,10 @@ export async function activate(context: vscode.ExtensionContext) {
   );
 
   // Check for initial document
+  RefreshCurrentEditor();
+}
+
+function RefreshCurrentEditor() {
   onDidChangeActiveTextEditor(vscode.window.activeTextEditor);
 }
 

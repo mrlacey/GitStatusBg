@@ -32,7 +32,7 @@ function activate(context) {
         // Handle scrolling in the document.
         vscode.window.onDidChangeTextEditorVisibleRanges(onDidChangeTextEditorVisibleRanges), 
         // File saved so pick up any changes because of saving
-        vscode.workspace.onDidSaveTextDocument((e) => { }), 
+        vscode.workspace.onDidSaveTextDocument(onFileSaved), 
         // Potentially large number of files changed - just reset the status cache (lazy but effective)
         vscode.workspace.onDidChangeWorkspaceFolders((e) => {
             fileStatusCache = {};
@@ -44,10 +44,13 @@ function activate(context) {
             fileStatusCache = {};
         }));
         // Check for initial document
-        onDidChangeActiveTextEditor(vscode.window.activeTextEditor);
+        RefreshCurrentEditor();
     });
 }
 exports.activate = activate;
+function RefreshCurrentEditor() {
+    onDidChangeActiveTextEditor(vscode.window.activeTextEditor);
+}
 function onFileSaved(e) {
     var _a, _b;
     // Document may have been colored before saving but shouldn't be colored after
@@ -85,6 +88,10 @@ function ReloadConfigurationInCaseChanged() {
     let modified = config.get("gitstatusbg.modifiedFileBackground");
     if (modified) {
         COLOR_MODIFIED = modified;
+    }
+    let behind = config.get("gitstatusbg.behindRemoteFileBackground");
+    if (behind) {
+        COLOR_BEHIND = behind;
     }
 }
 function SetColorToStatus(editor, range) {
@@ -150,18 +157,20 @@ function GetStatus(_fspath) {
                 }
             }
         });
-        let behind = (_a = repo.state.HEAD) === null || _a === void 0 ? void 0 : _a.behind;
-        if (!behind ? false : behind > 0) {
-            // There are changes on the server
-            let upstream = (_b = repo.state.HEAD) === null || _b === void 0 ? void 0 : _b.upstream;
-            if (upstream && upstream.name && upstream.remote) {
-                let upstreamDiff = yield repo.diffWith(`${upstream === null || upstream === void 0 ? void 0 : upstream.remote}/${upstream === null || upstream === void 0 ? void 0 : upstream.name}`);
-                upstreamDiff.forEach((value, _index, _changes) => {
-                    if (value.uri.fsPath === _fspath) {
-                        result = 100 /* CHANGED_ON_SERVER */;
-                        fileStatusCache[_fspath] = result;
-                    }
-                });
+        if (!result) {
+            let behind = (_a = repo.state.HEAD) === null || _a === void 0 ? void 0 : _a.behind;
+            if (!behind ? false : behind > 0) {
+                // There are changes on the server
+                let upstream = (_b = repo.state.HEAD) === null || _b === void 0 ? void 0 : _b.upstream;
+                if (upstream && upstream.name && upstream.remote) {
+                    let upstreamDiff = yield repo.diffWith(`${upstream === null || upstream === void 0 ? void 0 : upstream.remote}/${upstream === null || upstream === void 0 ? void 0 : upstream.name}`);
+                    upstreamDiff.forEach((value, _index, _changes) => {
+                        if (value.uri.fsPath === _fspath) {
+                            result = 100 /* CHANGED_ON_SERVER */;
+                            fileStatusCache[_fspath] = result;
+                        }
+                    });
+                }
             }
         }
         return result;
