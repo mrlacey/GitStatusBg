@@ -17,7 +17,7 @@ let COLOR_MODIFIED = "rgba(255, 165, 0, 0.05)";
 let COLOR_UNTRACKED = "rgba(71, 255, 25, 0.05)";
 let COLOR_BEHIND = "rgba(255, 0, 0, 0.05)";
 let git = undefined;
-// Keep track of current doecorations so that they can be removed
+// Keep track of current decorations so that they can be removed
 let currentDecorations = {};
 let fileStatusCache = {};
 function activate(context) {
@@ -27,7 +27,7 @@ function activate(context) {
         git = ext.exports.getAPI(1);
         git.onDidChangeState;
         context.subscriptions.push(
-        // Handle switching (or opening) documentt tabs
+        // Handle switching (or opening) document tabs
         vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor), 
         // Handle scrolling in the document.
         vscode.window.onDidChangeTextEditorVisibleRanges(onDidChangeTextEditorVisibleRanges), 
