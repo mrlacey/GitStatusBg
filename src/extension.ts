@@ -14,7 +14,7 @@ const enum XStatus {
 
 let git: API | undefined = undefined;
 
-// Keep track of current doecorations so that they can be removed
+// Keep track of current decorations so that they can be removed
 let currentDecorations: {
   [path: string]: vscode.TextEditorDecorationType | undefined;
 } = {};
@@ -32,7 +32,7 @@ export async function activate(context: vscode.ExtensionContext) {
   git.onDidChangeState;
 
   context.subscriptions.push(
-    // Handle switching (or opening) documentt tabs
+    // Handle switching (or opening) document tabs
     vscode.window.onDidChangeActiveTextEditor(onDidChangeActiveTextEditor),
 
     // Handle scrolling in the document.
