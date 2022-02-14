@@ -2,6 +2,10 @@
 
 All notable changes to the "gitstatusbg" extension will be documented in this file.
 
+## 1.1.4
+
+- Updated dependencies for security vulnerability fixes.
+
 ## 1.1.3
 
 - Updated dependencies for security vulnerability fixes.
